@@ -1,5 +1,5 @@
 import React from 'react'
-import Account from '../screens/Account'
+import Account from '../screens/account/Account'
 import {createStackNavigator} from '@react-navigation/stack'
 
 const Stack=createStackNavigator()

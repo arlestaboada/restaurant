@@ -5,7 +5,10 @@ import {createStackNavigator} from '@react-navigation/stack'
 const Stack=createStackNavigator()
 export default function TopRestaurantsStack() {
   return (
-      <Stack.Navigator>
+      <Stack.Navigator
+      screenOptions={{
+        headerShown: false
+      }}>
             <Stack.Screen
              name='topRestaurants'
              component={TopRestaurants}
