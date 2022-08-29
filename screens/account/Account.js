@@ -7,6 +7,7 @@ import {firebaseApp }from '../../utils/firebase'
 
 import UserGuest from "./UserGuest"
 import UserLogued from "./UserLogued"
+import Loading from "../../components/Loading"
 
 
 export default function Account() {
@@ -15,12 +16,12 @@ export default function Account() {
   const auth = firebase.auth();
 
   auth.onAuthStateChanged(user => { 
-    user!==null ? setLogin(false):setLogin(true)
+    user!==null ? setLogin(true):setLogin(false)
   });
   
-  if(login==null){
-    return <Text>Cargando ...</Text>
-  }
+ if(login==null){
+    return   <Loading isVisible={true} text="Cargando ..."/>
+ }
   return login ? <UserLogued/> : <UserGuest/>
 }
 
