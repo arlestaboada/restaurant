@@ -2,7 +2,7 @@ import { StyleSheet, Text, View,ScrollView,Image} from 'react-native'
 import React from 'react'
 import { Divider } from 'react-native-elements'
 
-export default function login() {
+export default function Login() {
   return (
     <ScrollView>
       <Image
