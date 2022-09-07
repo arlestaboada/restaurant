@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View,ScrollView,Image} from 'react-native'
 import React from 'react'
 import { Divider } from 'react-native-elements'
+import { useNavigation } from '@react-navigation/native'
 
 export default function Login() {
   return (
@@ -22,10 +23,11 @@ export default function Login() {
 }
 
 function CreateAccount(props){
+  const navigation=useNavigation()
   return (
     <Text 
     style={styles.register}
-    onPress={()=>console.log("caramba")}
+    onPress={()=>navigation.navigate("register")}
     >
       ¿ Aún no tienes una cuenta?{" "}
       <Text style={styles.btnRegister}>
