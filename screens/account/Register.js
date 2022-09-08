@@ -11,6 +11,7 @@ export default function Register() {
       resizeMode="contain"
       style={styles.image}
       
+      
       />
       <RegisterForm />
     </KeyboardAwareScrollView>
