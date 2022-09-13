@@ -1,6 +1,6 @@
 import {firebaseApp} from "./firebase"
 import firebase from 'firebase/compat/app'
-import "firebase/firestore"
+import 'firebase/compat/firestore'
 
 const db =firebase.firestore(firebaseApp)
 export const isUserLogged=()=>{
@@ -28,6 +28,7 @@ export const registerUser=async(email,password)=>{
         
     } catch (error) {
         result.error="Este correo ya ha sido registrado."
+        result.statusResponse=false
         
     }
 }
