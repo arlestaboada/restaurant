@@ -2,14 +2,14 @@
 import firebase from 'firebase/compat/app';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCB3VRAMU5H6ffvgnzcb6vPSrvxwLZFziQ",
-  authDomain: "restaurants-a3ed6.firebaseapp.com",
-  projectId: "restaurants-a3ed6",
-  storageBucket: "restaurants-a3ed6.appspot.com",
-  messagingSenderId: "482015705601",
-  appId: "1:482015705601:web:9253570eb1e385b0355e00",
-  measurementId: "G-711MKB2922"
-}
+  apiKey: "AIzaSyBQsdd_i2r4bLrxINufxeemWFlerEodots",
+  authDomain: "restaurants-4858b.firebaseapp.com",
+  projectId: "restaurants-4858b",
+  storageBucket: "restaurants-4858b.appspot.com",
+  messagingSenderId: "442048226153",
+  appId: "1:442048226153:web:dba281e260a86fb76a13f8",
+  measurementId: "G-X9TNL63JBG"
+};
 export const firebaseApp=firebase.initializeApp(firebaseConfig)
 
 

@@ -3,7 +3,7 @@ import React,{useState} from 'react'
 import {Button,Input,Icon} from "react-native-elements"
 import { size } from 'lodash'
 import { useNavigation } from '@react-navigation/native'
-
+import Loading from "../Loading"
 import { validateEmail } from '../../utils/helpers'
 import { registerUser } from '../../utils/actions'
 
@@ -16,6 +16,7 @@ export default function RegisterForm() {
   const [errorEmail,setErrorEmail]=useState("")
   const [errorPassword,setErrorPassword]=useState("")
   const [errorConfirm,setErrorConfirm]=useState("")
+  const [loading,setLoading]= useState(false)
   const navigation=useNavigation()
   
   const onChange=(e,type)=>{
@@ -27,12 +28,14 @@ export default function RegisterForm() {
       if(!validateData()){
         return
       }
+      setLoading(true)
       const result=await registerUser(formData.email,formData.password)
+      setLoading(false)
       if(!result.statusResponse){
         setErrorEmail(result.error)
         return
       }
-      navigation.navigate("account")
+      navigation.navigate("restaurants-nav")
 
   }
   const validateData=()=>{
@@ -116,7 +119,7 @@ export default function RegisterForm() {
           buttonStyle={styles.btn}
           onPress={()=> doRegisterUser()}
         />
-
+        <Loading isVisible={loading} text="Creando cuenta ..."/>
     </View>
   )
 }

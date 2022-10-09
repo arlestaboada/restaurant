@@ -31,6 +31,7 @@ export const registerUser=async(email,password)=>{
         result.statusResponse=false
         
     }
+    return result
 }
 
 
