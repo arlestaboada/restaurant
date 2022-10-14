@@ -45,13 +45,12 @@ export default function Navigation() {
     <NavigationContainer>
         <Tab.Navigator
         initialRouteName='search-nav'
-        tabBarOptions={{
-          activeTintColor: '#442484',
-          inactiveTintColor: '#a17dc3',
-
-        }}
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color }) => screenOptions(route,color)
+       
+        screenOptions={(
+          { route }) => ({
+          tabBarIcon: ({ color }) => screenOptions(route,color),
+          tabBarActiveTintColor: '#442484',
+          tabBarInactiveTintColor: '#a17dc3',
         })}
         >
             <Tab.Screen 

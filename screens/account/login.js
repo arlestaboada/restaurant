@@ -3,10 +3,11 @@ import React from 'react'
 import { Divider } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import LoginForm from '../../components/account/LoginForm'
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 
 export default function Login() {
   return (
-    <ScrollView>
+    <KeyboardAwareScrollView>
       <Image
       source={require("../../assets/arlestaboada.png")}
       resizeMode="contain"
@@ -19,7 +20,7 @@ export default function Login() {
       </View>
       <Divider style={styles.divider}/>
 
-    </ScrollView>
+    </KeyboardAwareScrollView>
   )
 }
 

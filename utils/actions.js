@@ -27,8 +27,26 @@ export const registerUser=async(email,password)=>{
 
         
     } catch (error) {
-        result.error="Este correo ya ha sido registrado."
         result.statusResponse=false
+        result.error="Este correo ya ha sido registrado."
+       
+        
+    }
+    return result
+}
+
+
+export const loginWithEmailAndPassword=async(email,password)=>{
+
+    const result={statusResponse:true,error:null}
+    try {
+        await firebase.auth().signInWithEmailAndPassword(email,password)
+
+        
+    } catch (error) {
+        result.statusResponse=false
+        result.error="Usuario o contraseña no válido."
+       
         
     }
     return result
