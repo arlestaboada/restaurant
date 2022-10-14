@@ -1,10 +1,14 @@
 import React ,{useState}from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import {Button,Input,Icon} from "react-native-elements"
+import { useNavigation } from '@react-navigation/native'
+import { isEmpty } from 'lodash'
+
 import Loading from "../Loading"
 import { validateEmail } from '../../utils/helpers'
 import { loginWithEmailAndPassword } from '../../utils/actions'
-import { isEmpty } from 'lodash'
+
+
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -12,6 +16,7 @@ export default function LoginForm() {
   const [errorEmail,setErrorEmail]=useState("")
   const [errorPassword,setErrorPassword]=useState("")
   const [loading,setLoading]= useState(false)
+  const navigation=useNavigation()
   const onChange=(e,type)=>{
     setFormData({...formData,[type]:e.nativeEvent.text})
     
@@ -30,7 +35,7 @@ export default function LoginForm() {
       setErrorPassword(result.error)
       return
     }
-    navigation.navigate("account-nav")
+    navigation.navigate("account")
 
     }
     const validateData=()=>{

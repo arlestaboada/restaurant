@@ -35,7 +35,7 @@ export default function RegisterForm() {
         setErrorEmail(result.error)
         return
       }
-      navigation.navigate("restaurants-nav")
+      navigation.navigate("account")
 
   }
   const validateData=()=>{
