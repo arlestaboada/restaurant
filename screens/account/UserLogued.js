@@ -1,17 +1,37 @@
 //rnfs
-import React from 'react'
+import React,{useState,useRef,useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-elements'
 import {useNavigation} from "@react-navigation/native"
-import { closeSession } from '../../utils/actions'
+import Toast from "react-native-easy-toast"
+
+import { closeSession, getCurrentUser } from '../../utils/actions'
+import InfoUser from '../../components/account/InfoUser'
+import Loading from "../../components/Loading"
 
 export default function UserLogued() {
-  const navigation=useNavigation();
+  const toastRef=useRef()
+  const navigation=useNavigation()
+  const [loading, setLoading] = useState(false)
+  const [loadingText, setLoadingText] = useState("")
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+   
+  setUser(getCurrentUser())
+    
+  }, [])
+
   return (
-    <View>
-      <Text>UserLogued ...</Text>
+    <View style={styles.container}>
+      
+      {user && <InfoUser user ={user}/>}
+      
+      
+      <Text>Account Options</Text>
       <Button
       title="Cerrar Sesión"
+      buttonStyle={styles.btnCloseSession}
+      titleStyle={styles.btnCloseSessionText}
       onPress={()=>{
         closeSession()
         navigation.navigate("restaurants-nav")
@@ -19,8 +39,31 @@ export default function UserLogued() {
       }}
       
       />
+      <Toast ref={toastRef} position="center" opacity={0.9}/>
+      <Loading isVisible={loading} text={loadingText}/>
     </View>
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+  container:{
+    minHeight:"100%",
+    backgroundColor:"#f9f9f9"
+  },
+  btnCloseSession:{
+    marginTop:30,
+    borderRadius:5,
+    backgroundColor:"#FFFFFF",
+    borderTopWidth:1,
+    borderTopColor:"#442484",
+    borderBottomWidth:1,
+    borderBottomColor:"#442484",
+    paddingVertical:10
+
+  },
+  btnCloseSessionText:{
+    color:"#442484"
+  }
+
+})
