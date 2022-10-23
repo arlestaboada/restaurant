@@ -1,10 +1,13 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { map } from 'lodash'
 import { ListItem,Icon} from 'react-native-elements'
 
+import Modal from '../Modal'
+
 
 export default function AccountOptions({user, toastRef}) {
+    const [showModal, setShowModal] = useState(true)
     const menuOptions=generateOptions()
   return (
     <View>
@@ -13,6 +16,7 @@ export default function AccountOptions({user, toastRef}) {
                 <ListItem
                  key={index}
                  style={styles.menuItem}
+                 onPress={menu.onPress}
                 >
                     <Icon 
                      type="material-community"
@@ -33,11 +37,17 @@ export default function AccountOptions({user, toastRef}) {
             ))
             
         }
+        <Modal isVisible={showModal} setVisible={setShowModal}>
+            <Text>Hola meloncita!</Text>
+            <Text>Hola meloncita!</Text>
+            <Text>Hola meloncita!</Text>
+            <Text>Hola meloncita!</Text>
+        </Modal>
     </View>
   )
 }
 
-function generateOptions(){
+const generateOptions=()=>{
 
     return [
         {
@@ -46,6 +56,7 @@ function generateOptions(){
             iconColorLeft:"#a7bfd3",
             iconNameRight:"chevron-right",
             iconColorRight:"#a7bfd3",
+            onPress:()=>selectedComponent ("displayName")
         },
         {
             title:"Cambiar Email",
@@ -53,6 +64,7 @@ function generateOptions(){
             iconColorLeft:"#a7bfd3",
             iconNameRight:"chevron-right",
             iconColorRight:"#a7bfd3",
+            onPress:()=>selectedComponent ("email")
         },
         {
             title:"Cambiar Contraseña",
@@ -60,11 +72,18 @@ function generateOptions(){
             iconColorLeft:"#a7bfd3",
             iconNameRight:"chevron-right",
             iconColorRight:"#a7bfd3",
+            onPress:()=>selectedComponent ("password")
         },
         
 
     ]
 }
+
+const selectedComponent=(key)=>{
+
+    console.log(key)
+}
+
 
 const styles = StyleSheet.create({
 
