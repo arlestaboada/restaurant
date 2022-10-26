@@ -70,7 +70,7 @@ export const uploadImage=async(image,path,name)=>{
         
     } catch (error) {
         result.error=error
-        return result
+      
         
     }
     return result
@@ -87,7 +87,7 @@ export const updateProfile=async(data)=>
     } catch (error) {
         result.statusResponse=false
         result.error=error
-        return result
+       
         
     }
     return result

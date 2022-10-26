@@ -65,6 +65,7 @@ export default function Navigation() {
              <Tab.Screen 
              name="toprestaurants-nav"
             component={TopRestaurantsStack}
+            /*Top 5*/
             options={{title:"Top 5"}} />
              <Tab.Screen 
              name="search-nav"
