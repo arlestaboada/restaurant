@@ -1,11 +1,17 @@
-import React,{useState} from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import { Avatar, Button, Icon, Input } from 'react-native-elements'
+import React,{useState,useEffect} from 'react'
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Avatar, Button, Icon, Input,Image } from 'react-native-elements'
 import CountryPicker from 'react-native-country-picker-modal'
-import { filter, map, remove, size } from 'lodash'
-
-import { loadImageFromGallery } from '../../utils/helpers'
+import { filter, map, size } from 'lodash'
 import { Alert } from 'react-native'
+import MapView from 'react-native-maps'
+
+import { getCurrentLocation, loadImageFromGallery } from '../../utils/helpers'
+import Modal from '../Modal'
+
+
+const widthScreen=Dimensions.get("window").width
+
 
 export default function AddRestaurantForm({toastRef,setLoading}) {
   const [formData, setFormData] = useState(defaulValues())
@@ -15,13 +21,19 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
   const [errorPhone, setErrorPhone] = useState(null)
   const [errorAddress, setErrorAddress] = useState(null)
   const [imagesSelected, setImagesSelected] = useState([])
+  const [isVisibleMap, setIsVisibleMap] = useState(false)
+  const [locationRestaurant, setLocationRestaurant] = useState(null)
+
 
   const addRestaurant=()=>{
     console.log(formData)
     console.log("corazon")
   }
   return (
-    <View style={styles.viewContainer}>
+    <ScrollView style={styles.viewContainer}>
+      <ImageRestaurant
+      imageRestaurant={imagesSelected[0]}
+      />
       <FormAdd
       formData={formData}
       setFormData={setFormData}
@@ -30,6 +42,7 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
       errorEmail={errorEmail}
       errorPhone={errorPhone}
       errorAddress={errorAddress}
+      setIsVisibleMap={setIsVisibleMap}
 
       />
       <UploadImage
@@ -42,10 +55,106 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
       onPress={addRestaurant}
       buttonStyle={styles.btnAddRestaurant}
       />
-    </View>
+      <MapRestaurant
+      isVisibleMap={isVisibleMap}
+      setIsVisibleMap={setIsVisibleMap}
+      locationRestaurant={locationRestaurant}
+      setLocationRestaurant={setLocationRestaurant}
+      toastRef={toastRef}
+      
+      />
+
+    </ScrollView>
   )
 }
 
+function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant,setLocationRestaurant,toastRef}){
+  useEffect(()=>{
+    (async()=>{
+      const response=await getCurrentLocation()
+      if(response.status){
+        setLocationRestaurant(response.location)
+        
+      }
+
+    })()
+
+
+  }
+
+  , [])
+  
+  return(
+   
+    <Modal isVisible={isVisibleMap} setVisible={setIsVisibleMap}>
+      <View>
+        {
+          console.log(locationRestaurant)
+        }
+        
+        {
+         
+          locationRestaurant &&(
+            <MapView
+            style={styles.mapStyle}
+            initialRegion={locationRestaurant}
+            showsUserLocation
+            
+            >
+              <MapView.Marker
+               coordinate={{
+                latitude:locationRestaurant.latitude,
+                longitude:locationRestaurant.longitude
+
+               }}
+               draggable
+              
+              />
+
+            </MapView>
+          )
+          
+        }
+        <View style={styles.viewMapBtn}>
+          <Button
+          title="Guardar Ubicación"
+          containerStyle={styles.viewMapBtnContainerSave}
+          buttonStyle={styles.viewMapBtnSave}
+          />
+          <Button
+          title="Cancelar Ubicación"
+          containerStyle={styles.viewMapBtnContainerCancel}
+          buttonStyle={styles.viewMapBtnCancel}
+          />
+         
+
+        </View>
+      </View>
+
+    </Modal>
+  )
+
+
+}
+function ImageRestaurant({imageRestaurant}){
+
+  return(
+    <View style={styles.viewPhoto}>
+       <Image
+        style={{width:widthScreen,height:200}}
+        source={
+          imageRestaurant
+          ?{uri:imageRestaurant}
+          :require("../../assets/no-image.png")
+        }
+       
+       />
+
+    </View>
+  )
+
+
+}
 function UploadImage({toastRef,imagesSelected,setImagesSelected}){
   const imageSelect=async()=>{
     const response =await loadImageFromGallery([4,3])
@@ -125,7 +234,7 @@ function UploadImage({toastRef,imagesSelected,setImagesSelected}){
 
 }
 
-function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,errorPhone,errorAddress}){
+function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,errorPhone,errorAddress,setIsVisibleMap}){
   const [country, setCountry] = useState("PE")
   const [callingCode, setCallingCode] = useState("51")
   const [phone, setPhone] = useState("")
@@ -148,6 +257,12 @@ function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,err
       defaultValue={formData.address}
       onChange={(e)=>  onChange(e,"address")}
       errorMessage={errorAddress}
+      rightIcon={{
+        type:"material-community",
+        name:"google-maps",
+        color:"#c2c2c2",
+        onPress:()=>setIsVisibleMap(true)
+      }}
       />
       <Input 
       keyboardType='email-address'
@@ -246,7 +361,34 @@ const styles = StyleSheet.create({
     height:70,
     marginRight:10
 
-  }
+  },
+  viewPhoto:{
+    alignItems:"center",
+    height:200,
+    marginBottom:20
+
+  },
+  mapStyle:{
+    width:"100%",
+    height:550
+  },
+  viewMapBtn:{
+    flexDirection:"row",
+    justifyContent:"center",
+    marginTop:10
+  },
+viewMapBtnContainerCancel:{
+  paddingLeft:5
+},
+viewMapBtnContainerSave:{
+  paddingRight:5
+},
+viewMapBtnCancel:{
+  backgroundColor:"#a65273"
+},
+viewMapBtnSave:{
+  backgroundColor:"#442484"
+}
   
   
 
