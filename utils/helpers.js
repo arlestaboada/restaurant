@@ -38,24 +38,56 @@ export  const fileToBlob=async(path)=>{
 
 }
 export const getCurrentLocation=async()=>{
+    const getLocation=(position)=>{
+        const location={
+            latitude:position.coords.latitude,
+            longitude:position.coords.longitude,
+            latitudeDelta:0.001,
+            longitudeDelta:0.001
+        }
+        return location
+
+    }
     const response={status:false,location:null}
-    const resultPermissions=await Permissions.askAsync(Permissions.LOCATION_FOREGROUND)
+    const resultPermissions=await Location.requestForegroundPermissionsAsync()
+   
     if(resultPermissions.status=="denied"){
 
         Alert.alert("Debes dar permisos para la localización.")
         return response
     }
-    const position=await Location.getCurrentPositionAsync({})
-    const location={
-        latitude:position.coords.latitude,
-        longitude:position.coords.longitude,
-        latitudeDelta:0.001,
-        longitudeDelta:0.001
-    }
+
+    const position=  await  Promise.race([
+        new Promise((resolver) => {
+            setTimeout(resolver, 3000, null);
+          }),
+          Location.getCurrentPositionAsync({
+            maximumAge: 1000 * 10, 
+          }),
+
+    ])
+    
+    if (position === null) {
+        
+        const newPosition=await Location.getCurrentPositionAsync({
+            maximumAge: 1000 * 10, 
+          })
+
+        const newLocation=getLocation(newPosition)  
+        response.status=true
+        response.location=newLocation
+        console.log(newLocation)
+        return response
+      }
+       
+    
+    const location=getLocation(position)
     response.status=true
     response.location=location
 
-    return response
+      return response
+
+    
 
 
 }

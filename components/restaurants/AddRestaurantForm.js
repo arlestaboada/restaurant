@@ -23,6 +23,7 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
   const [imagesSelected, setImagesSelected] = useState([])
   const [isVisibleMap, setIsVisibleMap] = useState(false)
   const [locationRestaurant, setLocationRestaurant] = useState(null)
+  
 
 
   const addRestaurant=()=>{
@@ -43,6 +44,7 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
       errorPhone={errorPhone}
       errorAddress={errorAddress}
       setIsVisibleMap={setIsVisibleMap}
+      locationRestaurant={locationRestaurant}
 
       />
       <UploadImage
@@ -63,17 +65,20 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
       toastRef={toastRef}
       
       />
+       
 
     </ScrollView>
   )
 }
 
 function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant,setLocationRestaurant,toastRef}){
+  const [newRegion, setNewRegion] = useState(null)
   useEffect(()=>{
     (async()=>{
+     
       const response=await getCurrentLocation()
       if(response.status){
-        setLocationRestaurant(response.location)
+        setNewRegion(response.location)
         
       }
 
@@ -83,28 +88,34 @@ function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant,setLocat
   }
 
   , [])
+  const confirmLocation=()=>{
+    setLocationRestaurant(newRegion)
+    toastRef.current.show("Localización guardada correctamente.",3000)
+    setIsVisibleMap(false)
+
+  }
   
   return(
    
     <Modal isVisible={isVisibleMap} setVisible={setIsVisibleMap}>
       <View>
-        {
-          console.log(locationRestaurant)
-        }
         
         {
          
-          locationRestaurant &&(
+         newRegion &&(
             <MapView
             style={styles.mapStyle}
-            initialRegion={locationRestaurant}
-            showsUserLocation
+            initialRegion={newRegion}
+            showsUserLocation={true}
+            onRegionChange={(region)=>{
+              setNewRegion(region)
+            }}
             
             >
               <MapView.Marker
                coordinate={{
-                latitude:locationRestaurant.latitude,
-                longitude:locationRestaurant.longitude
+                latitude:newRegion.latitude,
+                longitude:newRegion.longitude
 
                }}
                draggable
@@ -120,11 +131,13 @@ function MapRestaurant({isVisibleMap,setIsVisibleMap,locationRestaurant,setLocat
           title="Guardar Ubicación"
           containerStyle={styles.viewMapBtnContainerSave}
           buttonStyle={styles.viewMapBtnSave}
+          onPress={confirmLocation}
           />
           <Button
           title="Cancelar Ubicación"
           containerStyle={styles.viewMapBtnContainerCancel}
           buttonStyle={styles.viewMapBtnCancel}
+          onPress={()=>setIsVisibleMap(false)}
           />
          
 
@@ -234,7 +247,16 @@ function UploadImage({toastRef,imagesSelected,setImagesSelected}){
 
 }
 
-function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,errorPhone,errorAddress,setIsVisibleMap}){
+function FormAdd(
+  {formData,
+   setFormData,
+   errorName,
+   errorDescription,
+   errorEmail,
+   errorPhone,
+   errorAddress,
+   setIsVisibleMap,
+   locationRestaurant}){
   const [country, setCountry] = useState("PE")
   const [callingCode, setCallingCode] = useState("51")
   const [phone, setPhone] = useState("")
@@ -260,7 +282,7 @@ function FormAdd({formData,setFormData,errorName,errorDescription,errorEmail,err
       rightIcon={{
         type:"material-community",
         name:"google-maps",
-        color:"#c2c2c2",
+        color:locationRestaurant?"#442484":"#c2c2c2",
         onPress:()=>setIsVisibleMap(true)
       }}
       />
