@@ -76,7 +76,6 @@ export const getCurrentLocation=async()=>{
         const newLocation=getLocation(newPosition)  
         response.status=true
         response.location=newLocation
-        console.log(newLocation)
         return response
       }
        
