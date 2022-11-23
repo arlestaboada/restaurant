@@ -9,13 +9,13 @@ import uuid from 'random-uuid-v4'
 
 import { getCurrentLocation, loadImageFromGallery, validateEmail } from '../../utils/helpers'
 import Modal from '../Modal'
-import { uploadImage } from '../../utils/actions'
+import { addDocumentWithoutId, getCurrentUser, uploadImage } from '../../utils/actions'
 
 
 const widthScreen=Dimensions.get("window").width
 
 
-export default function AddRestaurantForm({toastRef,setLoading}) {
+export default function AddRestaurantForm({toastRef,setLoading,navigation}) {
   const [formData, setFormData] = useState(defaulValues())
   const [errorName, setErrorName] = useState(null)
   const [errorDescription, setErrorDescription] = useState(null)
@@ -33,9 +33,28 @@ export default function AddRestaurantForm({toastRef,setLoading}) {
       return
     }
     setLoading(true)
-    const response=await uploadImages()
-    console.log(response)
+    const responseUploadImages=await uploadImages()
+    const restaurant={
+      name:formData.name,
+      address:formData.address,
+      description:formData.description,
+      callingCode:formData.callingCode,
+      location:locationRestaurant,
+      images:responseUploadImages,
+      rating:0,
+      quantityVoting:0,
+      createAt:new Date(),
+      createBy:getCurrentUser().uid
+      
+    }
+    const responseAddDocument=await addDocumentWithoutId("restaurants",restaurant)
     setLoading(false)
+    if(!responseAddDocument.statusResponse){
+      toastRef.current.show("Error al grabar el restaurante,por favor intenta más tarde",3000)
+      return
+    }
+
+    navigation.navigate("restaurants")
     
   }
 const uploadImages=async()=>{
@@ -43,7 +62,6 @@ const uploadImages=async()=>{
   await Promise.all(
     map(imagesSelected,async(image)=>{
       const response=await uploadImage(image,"restaurants",uuid())
-      console.log(response)
       if(response.statusResponse){
         imagesUrl.push(response.url)
       }
