@@ -18,12 +18,19 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.arles.restaurants",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.arles.restaurants",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC-eU7nlrR81UlyP4D2CgWk17n6U95kAmI"
+        }
       },
       "permissions": [
         "CAMERA_ROLL",
