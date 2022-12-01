@@ -1,10 +1,12 @@
-import { size } from "lodash"
 import React from "react"
-import {  ActivityIndicator ,StyleSheet,Text , View,FlatList,TouchableOpacity,TouchableHighlight  } from 'react-native'
+import { size } from "lodash"
+import {  ActivityIndicator ,StyleSheet,Text , View,FlatList,TouchableOpacity } from 'react-native'
 import { Image } from "react-native-elements"
 
+import { formatPhone } from "../../utils/helpers"
 
-export default function ListRestaurants({restaurants,navigation}) {
+
+export default function ListRestaurants({restaurants,navigation, handleLoadMore}) {
     
   return (
     
@@ -12,6 +14,8 @@ export default function ListRestaurants({restaurants,navigation}) {
         <FlatList
         data={restaurants}
         keyExtractor={(item,index)=>{ return index.toString()}}
+        onEndReachedThreshold={0.5}
+        onEndReached={handleLoadMore}
         renderItem={(restaurant,index)=>
             (<Restaurant restaurant={restaurant} navigation={navigation}/>)
         
@@ -28,7 +32,6 @@ function Restaurant({restaurant,navigation}){
 
 
     const {id,images,name,address,description,phone,callingCode}=restaurant.item
-    console.log(phone)
     const imageRestaurant=images[0]
     
     return(
@@ -49,7 +52,7 @@ function Restaurant({restaurant,navigation}){
             <View>
                 <Text style={styles.restaurantTitle}>{name}</Text>
                 <Text style={styles.restaurantInformation}>{address}</Text>
-                <Text style={styles.restaurantInformation}>+{callingCode}-{phone}</Text>
+                <Text style={styles.restaurantInformation}>{formatPhone(callingCode,phone)}</Text>
                 <Text style={styles.restaurantDescription}>{
                      size(description)>0
                      ?`${description.substr(0,60)}...`

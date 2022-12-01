@@ -2,6 +2,7 @@ import * as ImagePicker from "expo-image-picker"
 import {Alert } from "react-native"
 import * as Location from "expo-location"
 import * as Camera from 'expo-camera';
+import { getCallingCode } from "react-native-country-picker-modal";
 
 export function validateEmail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -86,7 +87,8 @@ export const getCurrentLocation=async()=>{
 
       return response
 
-    
+}
 
-
+export const formatPhone=(callingCode,phone)=>{
+    return `+(${callingCode}) ${phone}`
 }

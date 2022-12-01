@@ -5,7 +5,7 @@ import firebase from 'firebase/compat/app'
 import { useFocusEffect } from '@react-navigation/native'
 import { size } from 'lodash'
 
-import { getCurrentUser, getRestaurants } from '../../utils/actions'
+import { getCurrentUser, getMoreRestaurants, getRestaurants } from '../../utils/actions'
 import Loading from "../../components/Loading"
 import ListRestaurants from './ListRestaurants'
 
@@ -16,7 +16,7 @@ export default function Restaurants({navigation}) {
   const [startRestaurant, setStartRestaurant] = useState(null)
   const [restaurants, setRestaurants] = useState([])
   const [loading, setLoading] = useState(false)
-  const limitRestaurants=7
+  const limitRestaurants=5
  
   useEffect(() => {
   firebase.auth().onAuthStateChanged((userInfo)=>{
@@ -46,7 +46,19 @@ export default function Restaurants({navigation}) {
 
   )
 
-  
+  const handleLoadMore=async()=>{
+    if(!startRestaurant){
+      return
+    }
+    setLoading(true)
+    const response= await getMoreRestaurants(limitRestaurants,startRestaurant)
+    if(response.statusResponse){
+      setStartRestaurant(response.startRestaurant)
+      setRestaurants([...restaurants,...response.restaurants])
+    }
+    setLoading(false)
+
+  }
 
 
 
@@ -61,6 +73,7 @@ export default function Restaurants({navigation}) {
           <ListRestaurants
           restaurants={restaurants}
           navigation={navigation}
+          handleLoadMore={handleLoadMore}
           
           />
         ):(
