@@ -2,10 +2,13 @@ import React,{useState,useEffect,useCallback} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Icon } from 'react-native-elements'
 import firebase from 'firebase/compat/app'
+import { useFocusEffect } from '@react-navigation/native'
+import { size } from 'lodash'
 
 import { getCurrentUser, getRestaurants } from '../../utils/actions'
 import Loading from "../../components/Loading"
-import { useFocusEffect } from '@react-navigation/native'
+import ListRestaurants from './ListRestaurants'
+
 
 
 export default function Restaurants({navigation}) {
@@ -14,7 +17,7 @@ export default function Restaurants({navigation}) {
   const [restaurants, setRestaurants] = useState([])
   const [loading, setLoading] = useState(false)
   const limitRestaurants=7
-  console.log("restaurants",restaurants)
+ 
   useEffect(() => {
   firebase.auth().onAuthStateChanged((userInfo)=>{
     userInfo?setUser(true):setUser(false)
@@ -53,7 +56,20 @@ export default function Restaurants({navigation}) {
   
   return (
     <View style={styles.viewBody}>
-      <Text>Restaurants...</Text>
+      {
+        size(restaurants)>0?(
+          <ListRestaurants
+          restaurants={restaurants}
+          navigation={navigation}
+          
+          />
+        ):(
+          <View style={styles.notFoundView}>
+            <Text style={styles.notFoundText}>No ahi restaurantes registrados. </Text>
+          </View>
+
+        )
+      }
       {
       user &&(
         <Icon
@@ -85,6 +101,15 @@ const styles = StyleSheet.create({
     shadowOpacity:0.5
 
 
+  },
+  notFoundView:{
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center"
+  },
+  notFoundText:{
+    fontSize:18,
+    fontWeight: "bold"
   }
   
 
