@@ -44,7 +44,7 @@ export default function Navigation() {
   return (
     <NavigationContainer>
         <Tab.Navigator
-        initialRouteName='search-nav'
+        initialRouteName='restaurants-nav'
        
         screenOptions={(
           { route }) => ({
@@ -56,7 +56,8 @@ export default function Navigation() {
             <Tab.Screen 
             name="restaurants-nav" 
             component={RestaurantsStack} 
-            options={{title:"Restaurantes"}}
+            options={{title:"Restaurantes",headerShown: false}}
+            
             />
             <Tab.Screen 
             name="favorites-nav"
