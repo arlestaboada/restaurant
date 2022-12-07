@@ -1,12 +1,16 @@
 import React ,{ useLayoutEffect,useState,useEffect}from 'react'
 import { View } from 'react-native'
 import { Alert,Dimensions ,StyleSheet, Text,  ScrollView} from 'react-native'
-import { Rating } from 'react-native-elements'
+import { ListItem, Rating,Icon } from 'react-native-elements'
 import CarouselImages from '../../components/CarouselImages'
+import { map } from 'lodash'
 
 
 import Loading from '../../components/Loading'
+import MapRestaurant from '../../components/restaurants/MapRestaurant'
 import { getDocumentById } from '../../utils/actions'
+import { formatPhone } from '../../utils/helpers'
+import ListReviews from './ListReviews'
 
 const widthScreen=Dimensions.get("window").width
 
@@ -53,6 +57,67 @@ if(!restaurant){
         rating={restaurant.rating}
       
       />
+      <RestaurantInfo
+        name={restaurant.name}
+        location={restaurant.location}
+        address={restaurant.address}
+        email={restaurant.email}
+        phone={formatPhone(restaurant.callingCode,restaurant.phone)}
+      
+      />
+      <ListReviews
+       navigation={navigation}
+       idRestaurant={restaurant.id}
+      />
+    </ScrollView>
+  )
+}
+function RestaurantInfo({name,location,address,email,phone}){
+  const listInfo=[
+    {text:address,iconName:"map-marker"},
+    {text:phone,iconName:"phone"},
+    {text:email,iconName:"at"},
+  ]
+  return(
+
+    <ScrollView style={styles.viewRestaurantInfo}>
+        <Text style={styles.restaurantInfoTitle}>
+            Información sobre el restaurante
+        </Text>
+        <MapRestaurant
+          location={location}
+          name={name}
+          height={150}
+        
+        />
+       
+        { 
+       
+          map(listInfo,(item,index)=>(
+           
+            <ListItem
+              key={index}
+              style={styles.containerListItem}
+            >
+              
+              <Icon
+                type="material-community"
+                name={item.iconName}
+                color="#442484"
+              
+              />
+              <ListItem.Content>
+                <ListItem.Title>{item.text}</ListItem.Title>
+              </ListItem.Content>
+
+            </ListItem>
+
+          ))
+
+
+        }
+
+
     </ScrollView>
   )
 }
@@ -102,5 +167,18 @@ const styles = StyleSheet.create({
   },
   nameRestaurant:{
     fontWeight:"bold"
+  },
+  viewRestaurantInfo:{
+    margin:15,
+    marginTop:25
+  },
+  restaurantInfoTitle:{
+    fontSize:20,
+    fontWeight:"bold",
+    marginBottom:15
+  },
+  containerListItem:{
+    borderBottomColor:"#a376c7",
+    borderBottomWidth:1
   }
 })

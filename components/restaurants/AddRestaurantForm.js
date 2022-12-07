@@ -40,6 +40,7 @@ export default function AddRestaurantForm({toastRef,setLoading,navigation}) {
       description:formData.description,
       callingCode:formData.callingCode,
       phone:formData.phone,
+      email:formData.email,
       location:locationRestaurant,
       images:responseUploadImages,
       rating:0,
