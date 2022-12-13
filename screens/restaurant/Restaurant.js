@@ -1,16 +1,18 @@
-import React ,{ useLayoutEffect,useState,useEffect}from 'react'
+import React ,{ useLayoutEffect,useState,useEffect,useCallback,useRef}from 'react'
 import { View } from 'react-native'
 import { Alert,Dimensions ,StyleSheet, Text,  ScrollView} from 'react-native'
 import { ListItem, Rating,Icon } from 'react-native-elements'
 import CarouselImages from '../../components/CarouselImages'
 import { map } from 'lodash'
-
+import { useFocusEffect } from '@react-navigation/native'
+import firebase from 'firebase/compat/app'
+import Toast from 'react-native-easy-toast'
 
 import Loading from '../../components/Loading'
 import MapRestaurant from '../../components/restaurants/MapRestaurant'
-import { getDocumentById } from '../../utils/actions'
+import { addDocumentWithoutId, deleteFavorite, getCurrentUser, getDocumentById, getIsFavorite } from '../../utils/actions'
 import { formatPhone } from '../../utils/helpers'
-import ListReviews from './ListReviews'
+import ListReviews from '../../components/restaurants/ListReviews' 
 
 const widthScreen=Dimensions.get("window").width
 
@@ -18,12 +20,36 @@ export default function Restaurant({navigation,route}) {
     const {id,name}=route.params
     const [restaurant, setRestaurant] = useState(null)
     const [activeSlide, setActiveSlide] = useState(0)
+    const [isFavorite, setIsFavorite] = useState(false)
+    const [userLogged, setUserLogged] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const toastRef=useRef()
+
+    firebase.auth().onAuthStateChanged(user=>{
+      user?setUserLogged(true):setUserLogged(false)
+
+    })
+
 
     useLayoutEffect(() => {
       navigation.setOptions( { title: name } )
 }, [])
 
-useEffect(() => {
+useEffect(()=>{
+(async()=>{
+ if(userLogged && restaurant){
+  const response=await getIsFavorite(restaurant.id)
+  
+  response.statusResponse && setIsFavorite(response.isFavorite)
+ }
+
+})()
+
+},[userLogged, restaurant])
+
+useFocusEffect(
+
+useCallback(() => {
   (async()=>{
     const response=await getDocumentById("restaurants",id)
     if(response.statusResponse){
@@ -36,6 +62,49 @@ useEffect(() => {
   
 }, [])
 
+
+)
+
+
+const addFavorite=async()=>{
+  if(!userLogged){
+    toastRef.current.show("Para agregar el restaurante a favoritos debes estar logueado.",3000)
+    return 
+  }
+  setLoading(true)
+  const response=await addDocumentWithoutId("favorites",{
+    idUser:getCurrentUser().uid,
+    idRestaurant:restaurant.id
+  })
+  setLoading(false)
+  if(response.statusResponse){
+     setIsFavorite(true)
+     toastRef.current.show("Restaurante añadido a favoritos.",3000)
+
+  }
+  else{
+    toastRef.current.show("No se pudo adiccionar el restaurante a favoritos. Por favor intenta más tarde.",3000)
+
+  }
+}
+const removeFavorite=async()=>{
+  setLoading(true)
+  const response=await deleteFavorite(restaurant.id)
+ 
+  if(response.statusResponse){
+    setIsFavorite(false)
+    toastRef.current.show("Restaurante eliminado de favoritos.",3000)
+
+ }
+ else{
+   toastRef.current.show("No se pudo eliminar el restaurante de favoritos. Por favor intenta más tarde.",3000)
+
+ }
+
+  setLoading(false)
+  
+}
+
 if(!restaurant){
   return <Loading isVisible={true} text="Cargando..."/>
 }
@@ -43,6 +112,7 @@ if(!restaurant){
    
   return (
     <ScrollView style={styles.viewBody}>
+      
       <CarouselImages
        images={restaurant.images}
        height={250}
@@ -51,6 +121,17 @@ if(!restaurant){
        setActiveSlide={setActiveSlide}
       
       />
+      <View style={styles.viewFavorite}>
+        <Icon
+          type="material-community"
+          name={isFavorite?"heart":"heart-outline"}
+          onPress={isFavorite?removeFavorite:addFavorite}
+          color="#442484"
+          size={35}
+          underlayColor="transparent"
+        />
+
+      </View>
       <TitleRestaurant
         name={restaurant.name}
         description={restaurant.description}
@@ -69,6 +150,8 @@ if(!restaurant){
        navigation={navigation}
        idRestaurant={restaurant.id}
       />
+       <Toast ref={toastRef} position="center" opacity={0.9}/>
+       <Loading isVisible={loading} text="Por favor espere..."/>
     </ScrollView>
   )
 }
@@ -180,5 +263,14 @@ const styles = StyleSheet.create({
   containerListItem:{
     borderBottomColor:"#a376c7",
     borderBottomWidth:1
+  },
+  viewFavorite:{
+    position:"absolute",
+    top:0,
+    right:0,
+    backgroundColor:"#fff",
+    borderBottomLeftRadius:100,
+    padding:5,
+    paddingLeft:15
   }
 })
