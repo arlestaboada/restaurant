@@ -35,22 +35,12 @@ export default function Restaurant({navigation,route}) {
       navigation.setOptions( { title: name } )
 }, [])
 
-useEffect(()=>{
-(async()=>{
- if(userLogged && restaurant){
-  const response=await getIsFavorite(restaurant.id)
-  
-  response.statusResponse && setIsFavorite(response.isFavorite)
- }
-
-})()
-
-},[userLogged, restaurant])
 
 useFocusEffect(
 
 useCallback(() => {
   (async()=>{
+    
     const response=await getDocumentById("restaurants",id)
     if(response.statusResponse){
       setRestaurant(response.document)
@@ -64,6 +54,19 @@ useCallback(() => {
 
 
 )
+
+useEffect(()=>{
+  (async()=>{
+   if(userLogged && restaurant){
+    const response=await getIsFavorite(restaurant.id)
+    
+    response.statusResponse && setIsFavorite(response.isFavorite)
+   }
+  
+  })()
+  
+  },[userLogged, restaurant])
+  
 
 
 const addFavorite=async()=>{
@@ -214,7 +217,7 @@ function TitleRestaurant({name,description,rating}){
           style={styles.rating}
           imageSize={20}
           readonly
-          startingValue={parseFloat(rating)}
+          startingValue={()=>parseFloat(rating)}
 
         
         />
