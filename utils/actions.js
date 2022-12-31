@@ -1,4 +1,5 @@
 import {firebaseApp} from "./firebase"
+import { FireSQL } from "firesql"
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 import 'firebase/compat/storage'
@@ -8,6 +9,7 @@ import { fileToBlob } from "./helpers"
 
 
 const db =firebase.firestore(firebaseApp)
+const fireSQL=new FireSQL(firebase.firestore(),{includeId:"id"})
 export const isUserLogged=()=>{
     let isLogged=false
     firebase.auth().onAuthStateChanged((user)=>{
@@ -69,10 +71,11 @@ export const uploadImage=async(image,path,name)=>{
                                 .getDownloadURL()
         result.statusResponse=true
         result.url=url
-
+        
         
     } catch (error) {
         result.error=error
+      
       
         
     }
@@ -230,9 +233,12 @@ export const getDocumentById=async(collection,id)=>{
     const result={statusResponse:true,error:null,document:null}
     try {
 
-        const response=await db.collection(collection).doc(id).get()
+        const response=await db.collection(collection)
+                               .doc(id)
+                               .get()
         result.document=response.data()
         result.document.id=response.id
+        
         
     } catch (error) {
         result.statusResponse=false
@@ -339,20 +345,13 @@ export const getFavorites=async()=>{
                             .where("idUser","==",getCurrentUser().uid)
                             .get()
         
-        const restaurantsId=[]
-        response.forEach(
-             (doc)=>{
-                const favorite=doc.data()
-                restaurantsId.push(favorite.idRestaurant)          
-                
-            })
-           
         await Promise.all(
-            map(restaurantsId,async(restaurantId)=>{
-                const response2=await getDocumentById("restaurants",restaurantId)
+            map(response.docs,async(doc)=>{
+                const favorite=doc.data()
+                const restaurant=await getDocumentById("restaurants",favorite.idRestaurant)
                 
-                if(response2.statusResponse){
-                    result.favorites.push(response2.document)
+                if(restaurant.statusResponse){
+                    result.favorites.push(restaurant.document)
                 }
 
 
@@ -391,6 +390,20 @@ export const getTopRestaurants=async(limit)=>{
     }
     return result
 }
+
+
+export const searchRestaurants=async(criteria)=>{
+    const result={statusResponse:true,error:null,restaurants:[]}
+    try {
+        result.restaurants=await fireSQL.query(`SELECT * FROM restaurants WHERE name LIKE '${criteria}%'`)
+       
+    } catch (error) {
+        result.statusResponse=false
+        result.error=error      
+    }
+    return result
+}
+
 
 
 

@@ -213,15 +213,19 @@ function TitleRestaurant({name,description,rating}){
     <View style={styles.viewRestaurantTitle}>
       <View style={styles.viewRestaurantContainer}>
         <Text style={styles.nameRestaurant}>{name}</Text>
-        <Rating
+        
+        {rating>=0&&<Rating
           style={styles.rating}
           imageSize={20}
           readonly
-          startingValue={()=>parseFloat(rating)}
-
+          startingValue={parseFloat(rating)}
         
         />
-
+        
+      
+      }
+        
+       
       </View>
       
       <Text style={styles.descriptionRestaurant}>{description}</Text>
