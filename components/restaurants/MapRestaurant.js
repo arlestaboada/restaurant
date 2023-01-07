@@ -14,19 +14,25 @@ export default function MapRestaurant({location,name,height}) {
      })
    }
   return (
+    
     <MapView
       style={{height:height,width:"100%"}}
       initialRegion={location}
       onPress={openAppMap}
     >
+       { location &&(
+         <MapView.Marker
+         coordinate={{
+           latitude:location.latitude,
+           longitude:location.longitude
+         }}
+       
+       />
 
-        <MapView.Marker
-          coordinate={{
-            latitude:location.latitude,
-            longitude:location.longitude
-          }}
+       )
         
-        />
+        }
+       
     </MapView>
   )
 }
