@@ -3,6 +3,8 @@ import { FireSQL } from "firesql"
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 import 'firebase/compat/storage'
+import "firebase/compat/auth"
+
 import {map} from "lodash"
 import * as Notifications from "expo-notifications"
 import  Constans  from "expo-constants"
@@ -541,6 +543,24 @@ export const getUsersFavorites=async(restaurantId)=>{
     }
     return result
 }
+
+
+
+export const sendEmailResetPassword=async(email)=>{
+    const result={statusResponse:true,error:null}
+   
+    try {
+        await firebase.auth().sendPasswordResetEmail(email)
+      
+        
+    } catch (error) {
+        result.statusResponse = false
+        result.error = error
+        
+    }
+    return result
+}
+
 
 
 

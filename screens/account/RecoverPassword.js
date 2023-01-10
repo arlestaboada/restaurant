@@ -1,8 +1,11 @@
+import { async } from '@firebase/util'
 import React,{useState} from 'react'
+import { Alert } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { Button, Icon, Input } from 'react-native-elements'
 import Loading from '../../components/Loading'
+import { sendEmailResetPassword } from '../../utils/actions'
 import { validateEmail } from '../../utils/helpers'
 
 export default function RecoverPassword() {
@@ -10,11 +13,18 @@ export default function RecoverPassword() {
     const [errorEmail, setErrorEmail] = useState(null)
     const [loading, setLoading] = useState(false)
 
-    const onSubmit=()=>{
+    const onSubmit=async()=>{
         if(!validateData()){
             return
         }
-        console.log("Fuck yeah!!!")
+       setLoading(true)
+       const result=await sendEmailResetPassword(email)
+       setLoading(false)
+       if(!result.statusResponse){
+        Alert.alert("Error","Este correo no está relacionado a ningún usuario.")
+       }
+       Alert.alert("Confirmación","Se le ha enviado un email con las instrucciones para cambiar la contraseña.")
+       navigation.navigate("account",{screen:"login"})
     }
 
     const validateData=()=>{
