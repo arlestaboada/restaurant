@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native'
 import { isEmpty } from 'lodash'
 
 import * as GoogleSignIn from "expo-google-sign-in"
-import * as firebase from 'firebase/compat/app'
-
+import firebase from 'firebase/compat/app'
+import "firebase/compat/auth"
 
 import Loading from "../Loading"
 import { validateEmail } from '../../utils/helpers'
@@ -29,6 +29,7 @@ export default function LoginForm() {
 
   async function googleSignInAsync() {
     try {
+    
         await GoogleSignIn.initAsync()
         if (Platform.OS === "android") {
             await GoogleSignIn.askForPlayServicesAsync()
@@ -44,6 +45,7 @@ export default function LoginForm() {
             return { cancelled: true }
         }
     } catch (error) {
+     
         setLoading(false)
         Alert.alert(error.message)
         return { error: true }
@@ -163,7 +165,7 @@ function isUserEqual(googleUser, firebaseUser) {
           title="Iniciar Sesión con Google"
           containerStyle={styles.btnContainer}
           buttonStyle={styles.btnGoogle}
-          onPress={()=> googleSignInAsync}
+          onPress={ googleSignInAsync}
           icon={
             <Icon
              name="google"

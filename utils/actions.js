@@ -8,7 +8,6 @@ import * as Notifications from "expo-notifications"
 import  Constans  from "expo-constants"
 
 import { fileToBlob } from "./helpers"
-import { async } from "@firebase/util"
 
 import { Alert, Platform } from "react-native"
 
