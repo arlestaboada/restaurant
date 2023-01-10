@@ -4,6 +4,7 @@ import { Divider } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import LoginForm from '../../components/account/LoginForm'
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
+import RecoverPassword from './RecoverPassword'
 
 export default function Login() {
   return (
@@ -17,12 +18,36 @@ export default function Login() {
       <View style={styles.container}>
        <LoginForm/>
         <CreateAccount />
+        <RecoverPasswordForm/>
       </View>
       <Divider style={styles.divider}/>
 
     </KeyboardAwareScrollView>
   )
 }
+
+function RecoverPasswordForm(){
+  const navigation=useNavigation()
+
+  return(
+
+    <Text
+     style={styles.register}
+     onPress={()=>navigation.navigate("recover-password")}
+    
+    >
+      ¿Olvidastes tu contraseña?{" "}
+      <Text style={styles.btnRegister}>
+        Recupérala
+      </Text>
+
+    </Text>
+  )
+
+
+
+}
+
 
 function CreateAccount(props){
   const navigation=useNavigation()
