@@ -4,13 +4,14 @@ import {  ActivityIndicator ,StyleSheet,Text , View,FlatList,TouchableOpacity } 
 import { Image } from "react-native-elements"
 
 import { formatPhone } from "../../utils/helpers"
+import { ScrollView } from "react-native-gesture-handler"
 
 
 export default function ListRestaurants({restaurants,navigation, handleLoadMore}) {
     
   return (
     
-    <View>
+    <ScrollView>
         <FlatList
         data={restaurants}
         keyExtractor={(item,index)=>{ return index.toString()}}
@@ -24,7 +25,7 @@ export default function ListRestaurants({restaurants,navigation, handleLoadMore}
         
         />
      
-    </View>
+    </ScrollView>
   )
 }
 
